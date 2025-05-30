@@ -1,0 +1,4 @@
+.DS_Store
+docs
+data/generate_vocab.js
+data/*.csv

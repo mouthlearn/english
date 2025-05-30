@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>English Vocabulary Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <div class="min-h-screen">
+      <!-- Header -->
+      <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <h1 class="text-2xl font-bold text-gray-900 text-center">
+            English Vocabulary Learning
+          </h1>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Game Selection -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Game cards will be dynamically added here -->
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="src/components/common/timer.js"></script>
+    <script src="src/utils/storage.js"></script>
+    <script src="src/utils/vocab.js"></script>
+    <script src="src/utils/learned_words.js"></script>
+    <script src="src/components/learned-words.js"></script>
+    <script src="src/components/common/confirmDialog.js"></script>
+    <script src="src/components/common/cancelButton.js"></script>
+    <script src="src/components/common/gameHeader.js"></script>
+    <script src="src/components/common/floatEndButtons.js"></script>
+    <script src="src/components/common/resultDisplay.js"></script>
+    <script src="src/components/games/matching.js"></script>
+    <script src="src/components/games/fillBlank.js"></script>
+    <script src="src/components/games/ipaTest.js"></script>
+    <script src="src/components/games/contextTest.js"></script>
+    <script src="src/components/games/wordScramble.js"></script>
+    <script src="src/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  </body>
+</html>
