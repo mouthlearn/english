@@ -18,36 +18,39 @@ class IpaTestGame {
   showDifficultySelection() {
     const mainContent = document.querySelector("main");
     mainContent.innerHTML = `
-      <div class="max-w-2xl mx-auto">
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div class="p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Select Difficulty</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <button id="easy-btn" class="flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-6 rounded-lg hover:from-green-600 hover:to-green-700 transition-all transform hover:scale-105">
-                <span class="text-2xl">🎯</span>
-                <div class="text-left">
-                  <p class="font-semibold">Easy Mode</p>
-                  <p class="text-sm opacity-90">Multiple Choice</p>
-                </div>
-              </button>
-              <button id="hard-btn" class="flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 text-white py-4 px-6 rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105">
-                <span class="text-2xl">🔥</span>
-                <div class="text-left">
-                  <p class="font-semibold">Hard Mode</p>
-                  <p class="text-sm opacity-90">Type Answer</p>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
+      <div class="pt-24 pb-8 px-4 min-h-[calc(100vh-6rem)] flex items-start justify-center">
+        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8"></div>
       </div>
     `;
-
+    const container = mainContent.querySelector(".w-full.max-w-5xl");
+    // Render trực tiếp vào container
+    const title = document.createElement("h2");
+    title.className = "text-2xl font-bold text-gray-800 mb-4 text-center";
+    title.textContent = "Select Difficulty";
+    container.appendChild(title);
+    const grid = document.createElement("div");
+    grid.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
+    grid.innerHTML = `
+      <button id="easy-btn" class="flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-6 rounded-lg hover:from-green-600 hover:to-green-700 transition-all transform hover:scale-105">
+        <span class="text-2xl">🎯</span>
+        <div class="text-left">
+          <p class="font-semibold">Easy Mode</p>
+          <p class="text-sm opacity-90">Multiple Choice</p>
+        </div>
+      </button>
+      <button id="hard-btn" class="flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 text-white py-4 px-6 rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105">
+        <span class="text-2xl">🔥</span>
+        <div class="text-left">
+          <p class="font-semibold">Hard Mode</p>
+          <p class="text-sm opacity-90">Type Answer</p>
+        </div>
+      </button>
+    `;
+    container.appendChild(grid);
     document.getElementById("easy-btn").onclick = () => {
       this.difficulty = "easy";
       this.startGame();
     };
-
     document.getElementById("hard-btn").onclick = () => {
       this.difficulty = "hard";
       this.startGame();
@@ -106,57 +109,56 @@ class IpaTestGame {
 
   render() {
     const mainContent = document.querySelector("main");
-    mainContent.innerHTML = "";
-
+    mainContent.innerHTML = `
+      <div class="pt-24 pb-8 px-4 min-h-[calc(100vh-6rem)] flex items-start justify-center">
+        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8"></div>
+      </div>
+    `;
+    const container = mainContent.querySelector(".w-full.max-w-5xl");
     if (this.current >= this.questions.length || this.timeUp) {
       this.showResult();
       return;
     }
-
-    const gameContainer = document.createElement("div");
-    gameContainer.className = "max-w-2xl mx-auto";
-
-    const card = document.createElement("div");
-    card.className = "bg-white rounded-xl shadow-lg overflow-hidden";
-
+    // Render trực tiếp vào container
     const header = document.createElement("div");
-    header.className = "p-6 border-b border-gray-200";
+    header.className = "flex items-center justify-between mb-4";
     header.innerHTML = `
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold text-gray-800">IPA Test</h2>
-        <span class="px-3 py-1 rounded-full text-sm font-medium ${
-          this.difficulty === "easy"
-            ? "bg-green-100 text-green-800"
-            : "bg-red-100 text-red-800"
-        }">
-          ${this.difficulty === "easy" ? "Easy Mode" : "Hard Mode"}
-        </span>
-      </div>
-      <p class="text-gray-600">Type the English word for the given IPA pronunciation</p>
+      <h2 class="text-2xl font-bold text-gray-800">IPA Test</h2>
+      <span class="px-3 py-1 rounded-full text-sm font-medium ${
+        this.difficulty === "easy"
+          ? "bg-green-100 text-green-800"
+          : "bg-red-100 text-red-800"
+      }">
+        ${this.difficulty === "easy" ? "Easy Mode" : "Hard Mode"}
+      </span>
     `;
-    card.appendChild(header);
-
+    container.appendChild(header);
+    const desc = document.createElement("p");
+    desc.className = "text-gray-600 mb-6";
+    desc.textContent = "Type the English word for the given IPA pronunciation";
+    container.appendChild(desc);
     const question = this.questions[this.current];
     const questionContainer = document.createElement("div");
-    questionContainer.className = "p-6";
+    questionContainer.className = "mb-6";
     questionContainer.innerHTML = `
-      <div class="mb-6">
-        <div class="flex items-center space-x-2 mb-4">
-          <span class="text-sm text-gray-500">
-            Question ${this.current + 1} of ${this.questions.length}
-          </span>
-        </div>
-        <div class="text-center">
-          <p class="text-3xl font-mono text-gray-800 mb-4">${question.ipa}</p>
-          <p class="text-gray-600 italic">${question.definition}</p>
-        </div>
+      <div class="flex items-center space-x-2 mb-4">
+        <span class="text-sm text-gray-500">
+          Question ${this.current + 1} of ${this.questions.length}
+        </span>
+      </div>
+      <div class="text-center">
+        <p class="text-3xl font-mono text-gray-800 mb-4" translate="yes">${
+          question.ipa
+        }</p>
+        <p class="text-gray-600 italic" translate="yes">${
+          question.definition
+        }</p>
       </div>
     `;
-
+    container.appendChild(questionContainer);
     if (this.difficulty === "easy") {
       const allWords = window.vocabManager.getAllWords();
       const options = this.generateOptions(question.answer, allWords);
-
       const optionsContainer = document.createElement("div");
       optionsContainer.className = "space-y-3";
       optionsContainer.innerHTML = options
@@ -169,28 +171,23 @@ class IpaTestGame {
       `
         )
         .join("");
-
-      questionContainer.appendChild(optionsContainer);
+      container.appendChild(optionsContainer);
     } else {
-      questionContainer.innerHTML += `
-        <div class="space-y-4">
-          <input type="text" 
-                 class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                 placeholder="Type your answer here..."
-                 id="answer-input">
-          <button class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-[1.02]"
-                  onclick="document.getElementById('answer-input').value && ipaTestGame.handleAnswer(document.getElementById('answer-input').value.trim())">
-            Submit Answer
-          </button>
-        </div>
+      const inputDiv = document.createElement("div");
+      inputDiv.className = "space-y-4";
+      inputDiv.innerHTML = `
+        <input type="text" 
+               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+               placeholder="Type your answer here..."
+               id="answer-input">
+        <button class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-[1.02]"
+                onclick="document.getElementById('answer-input').value && ipaTestGame.handleAnswer(document.getElementById('answer-input').value.trim())">
+          Submit Answer
+        </button>
       `;
+      container.appendChild(inputDiv);
     }
-    card.appendChild(questionContainer);
-
-    gameContainer.appendChild(card);
-    mainContent.appendChild(gameContainer);
     window.renderCancelButton();
-
     if (this.difficulty === "hard") {
       const input = document.getElementById("answer-input");
       input.focus();
@@ -283,8 +280,8 @@ class IpaTestGame {
                   <span class="text-gray-600">${answer.user.toUpperCase()}</span>
                 </p>
                 <p class="text-sm">
-                  <span class="font-medium text-gray-700">Correct answer:</span>
-                  <span class="text-gray-600">${answer.answer.toUpperCase()}</span>
+                  <span class="font-medium text-green-700">Correct answer:</span>
+                  <span class="text-green-700">${answer.answer.toUpperCase()}</span>
                 </p>
               </div>
               ${
@@ -306,34 +303,6 @@ class IpaTestGame {
     `;
     mainContent.appendChild(answersSection);
     window.renderFloatEndButtons(() => this.init());
-  }
-
-  getPronunciationHint(ipa) {
-    // Add common IPA to English sound mappings
-    const ipaMappings = {
-      æ: "a as in cat",
-      ɑ: "a as in father",
-      eɪ: "ay as in say",
-      i: "ee as in see",
-      aɪ: "i as in high",
-      oʊ: "o as in go",
-      u: "oo as in too",
-      aʊ: "ow as in now",
-      ɔɪ: "oy as in boy",
-      θ: "th as in think",
-      ð: "th as in this",
-      ʃ: "sh as in she",
-      ʒ: "s as in vision",
-      tʃ: "ch as in church",
-      dʒ: "j as in jump",
-      ŋ: "ng as in sing",
-    };
-
-    let hint = ipa;
-    Object.entries(ipaMappings).forEach(([symbol, explanation]) => {
-      hint = hint.replace(new RegExp(symbol, "g"), `(${explanation})`);
-    });
-    return hint;
   }
 }
 

@@ -1,0 +1,8 @@
+<svg width="72" height="72" viewBox="0 0 72 72" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <rect width="72" height="72" rx="20" fill="none"/>
+    <text xmlns="http://www.w3.org/2000/svg" x="6" y="48" font-size="20" font-family="Arial" font-weight="bold" fill="#F59E42" transform="rotate(-15 22 38)">Q</text>
+    <text x="22" y="32" font-size="20" font-family="Arial" font-weight="bold" fill="#F59E42" transform="rotate(-10 22 38)">W</text>
+    <text x="36" y="48" font-size="20" font-family="Arial" font-weight="bold" fill="#F59E42" transform="rotate(8 36 48)">S</text>
+    <text x="50" y="34" font-size="20" font-family="Arial" font-weight="bold" fill="#F59E42" transform="rotate(15 50 34)">A</text>
+</svg> 

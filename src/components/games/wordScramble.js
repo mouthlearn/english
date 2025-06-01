@@ -19,36 +19,39 @@ class WordScrambleGame {
   showDifficultySelection() {
     const mainContent = document.querySelector("main");
     mainContent.innerHTML = `
-      <div class="max-w-2xl mx-auto">
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div class="p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Select Difficulty</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <button id="easy-btn" class="flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-6 rounded-lg hover:from-green-600 hover:to-green-700 transition-all transform hover:scale-105">
-                <span class="text-2xl">🎯</span>
-                <div class="text-left">
-                  <p class="font-semibold">Easy Mode</p>
-                  <p class="text-sm opacity-90">Exact Letters</p>
-                </div>
-              </button>
-              <button id="hard-btn" class="flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 text-white py-4 px-6 rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105">
-                <span class="text-2xl">🔥</span>
-                <div class="text-left">
-                  <p class="font-semibold">Hard Mode</p>
-                  <p class="text-sm opacity-90">With Extra Letters</p>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
+      <div class="pt-24 pb-8 px-4 min-h-[calc(100vh-6rem)] flex items-start justify-center">
+        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8"></div>
       </div>
     `;
-
+    const container = mainContent.querySelector(".w-full.max-w-5xl");
+    // Render trực tiếp vào container
+    const title = document.createElement("h2");
+    title.className = "text-2xl font-bold text-gray-800 mb-4 text-center";
+    title.textContent = "Select Difficulty";
+    container.appendChild(title);
+    const grid = document.createElement("div");
+    grid.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
+    grid.innerHTML = `
+      <button id="easy-btn" class="flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-6 rounded-lg hover:from-green-600 hover:to-green-700 transition-all transform hover:scale-105">
+        <span class="text-2xl">🎯</span>
+        <div class="text-left">
+          <p class="font-semibold">Easy Mode</p>
+          <p class="text-sm opacity-90">Exact Letters</p>
+        </div>
+      </button>
+      <button id="hard-btn" class="flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 text-white py-4 px-6 rounded-lg hover:from-red-600 hover:to-red-700 transition-all transform hover:scale-105">
+        <span class="text-2xl">🔥</span>
+        <div class="text-left">
+          <p class="font-semibold">Hard Mode</p>
+          <p class="text-sm opacity-90">With Extra Letters</p>
+        </div>
+      </button>
+    `;
+    container.appendChild(grid);
     document.getElementById("easy-btn").onclick = () => {
       this.difficulty = "easy";
       this.startGame();
     };
-
     document.getElementById("hard-btn").onclick = () => {
       this.difficulty = "hard";
       this.startGame();
@@ -119,173 +122,135 @@ class WordScrambleGame {
 
   render() {
     const mainContent = document.querySelector("main");
-    mainContent.innerHTML = "";
-
+    mainContent.innerHTML = `
+      <div class="pt-24 pb-8 px-4 min-h-[calc(100vh-6rem)] flex items-start justify-center">
+        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8"></div>
+      </div>
+    `;
+    const container = mainContent.querySelector(".w-full.max-w-5xl");
     if (this.current >= this.questions.length || this.timeUp) {
       this.showResult();
       return;
     }
-
-    const gameContainer = document.createElement("div");
-    gameContainer.className = "max-w-2xl mx-auto";
-
-    const card = document.createElement("div");
-    card.className = "bg-white rounded-xl shadow-lg overflow-hidden";
-
+    // Render trực tiếp vào container
     const header = document.createElement("div");
-    header.className = "p-6 border-b border-gray-200";
+    header.className =
+      "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4";
     header.innerHTML = `
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-        <h2 class="text-2xl font-bold text-gray-800">Word Scramble</h2>
-        <div class="flex items-center gap-2">
-          <span class="text-sm text-gray-500">Mode:</span>
-          <span class="px-3 py-1 rounded-full text-sm font-medium ${
-            this.difficulty === "easy"
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-          }">
-            ${this.difficulty === "easy" ? "Easy" : "Hard"}
-          </span>
-        </div>
+      <h2 class="text-2xl font-bold text-gray-800">Word Scramble</h2>
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-500">Mode:</span>
+        <span class="px-3 py-1 rounded-full text-sm font-medium ${
+          this.difficulty === "easy"
+            ? "bg-green-100 text-green-800"
+            : "bg-red-100 text-red-800"
+        }">
+          ${this.difficulty === "easy" ? "Easy" : "Hard"}
+        </span>
       </div>
-      <p class="text-gray-600">Select letters to form the correct word</p>
     `;
-    card.appendChild(header);
-
+    container.appendChild(header);
+    const desc = document.createElement("p");
+    desc.className = "text-gray-600 mb-6";
+    desc.textContent = "Select letters to form the correct word";
+    container.appendChild(desc);
     const question = this.questions[this.current];
     const questionContainer = document.createElement("div");
-    questionContainer.className = "p-6";
-
-    // Reset selected letters for new question
-    this.selectedLetters = [];
-
+    questionContainer.className = "mb-6";
     questionContainer.innerHTML = `
-      <div class="mb-6">
-        <div class="flex items-center space-x-2 mb-4">
-          <span class="text-sm text-gray-500">
-            Question ${this.current + 1} of ${this.questions.length}
-          </span>
-        </div>
-        <div class="text-center mb-6">
-          <p class="text-xl text-gray-600 mb-4">${question.definition}</p>
-          ${
-            this.difficulty === "easy"
-              ? `<p class="text-sm text-gray-500 mb-4">Hint: The word has ${question.answer.length} letters</p>`
-              : ""
-          }
-          <div class="mt-4 flex justify-center space-x-4 mb-4">
-            <button class="px-6 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all duration-200"
-                    onclick="wordScrambleGame.clearSelection()">
-              Clear
-            </button>
-            <button class="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200"
-                    onclick="wordScrambleGame.checkAnswer()">
-              Check
-            </button>
-          </div>
-          <div class="flex flex-wrap justify-center gap-2 mb-4 transition-all duration-300" id="selected-word">
-            ${Array(question.answer.length)
-              .fill("_")
-              .map(
-                () => `
-              <div class="w-10 h-10 border-2 border-gray-300 rounded-lg flex items-center justify-center text-xl font-bold text-gray-400 transition-all duration-300">
-                _
-              </div>
-            `
-              )
-              .join("")}
-          </div>
-        </div>
-        <div class="grid grid-cols-6 gap-2" id="letter-buttons">
-          ${question.scrambled
-            .map(
-              (letter) => `
-            <button class="w-10 h-10 border-2 border-gray-200 rounded-lg flex items-center justify-center text-xl font-bold text-gray-800 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 disabled:opacity-40 disabled:bg-gray-100 disabled:border-gray-200 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:hover:border-gray-200 disabled:transform disabled:scale-95"
-                    onclick="wordScrambleGame.selectLetter('${letter}')"
-                    data-letter="${letter}">
-              ${letter}
-            </button>
-          `
-            )
-            .join("")}
-        </div>
+      <div class="flex items-center space-x-2 mb-4">
+        <span class="text-sm text-gray-500">
+          Question ${this.current + 1} of ${this.questions.length}
+        </span>
+      </div>
+      <div class="text-center">
+        <p class="text-lg text-gray-700 mb-2" translate="yes">${
+          question.definition
+        }</p>
+        <p class="text-base text-gray-500 italic font-mono" translate="yes">${
+          question.ipa
+        }</p>
       </div>
     `;
-    card.appendChild(questionContainer);
+    container.appendChild(questionContainer);
 
-    // Add styles for animations
-    const style = document.createElement("style");
-    style.textContent = `
-      @keyframes pop {
-        0% { transform: scale(0.8); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-      }
-      @keyframes correct {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); background-color: rgba(34, 197, 94, 0.1); }
-        100% { transform: scale(1); }
-      }
-      @keyframes incorrect {
-        0% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
-        100% { transform: translateX(0); }
-      }
-      .animate-pop {
-        animation: pop 0.3s ease-out;
-      }
-      .animate-correct {
-        animation: correct 0.5s ease-out;
-      }
-      .animate-incorrect {
-        animation: incorrect 0.5s ease-out;
-      }
+    // Add selected letters display
+    const selectedLettersContainer = document.createElement("div");
+    selectedLettersContainer.id = "selected-letters";
+    selectedLettersContainer.className = "flex justify-center gap-2 mb-6";
+    container.appendChild(selectedLettersContainer);
+    this.updateSelectedWord();
+
+    // Add letter buttons
+    const letterButtonsContainer = document.createElement("div");
+    letterButtonsContainer.id = "letter-buttons";
+    letterButtonsContainer.className =
+      "grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-2 mb-6";
+    letterButtonsContainer.innerHTML = question.scrambled
+      .map(
+        (letter, idx) => `
+        <button 
+          class="w-12 h-12 bg-white border-2 border-gray-200 rounded-lg text-xl font-bold text-gray-800 hover:bg-gray-50 hover:border-blue-500 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:border-gray-200 select-none"
+          onclick="wordScrambleGame.selectLetter('${letter}', ${idx})"
+          id="letter-btn-${idx}"
+        >
+          ${letter}
+        </button>
+      `
+      )
+      .join("");
+    container.appendChild(letterButtonsContainer);
+
+    // Add control buttons
+    const controlButtonsContainer = document.createElement("div");
+    controlButtonsContainer.className = "flex gap-4 justify-center";
+    controlButtonsContainer.innerHTML = `
+      <button 
+        class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all transform hover:scale-105 select-none"
+        onclick="wordScrambleGame.backspaceLetter()"
+      >
+        ⌫
+      </button>
+      <button 
+        class="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 select-none"
+        onclick="wordScrambleGame.checkAnswer()"
+      >
+        Check
+      </button>
     `;
-    document.head.appendChild(style);
+    container.appendChild(controlButtonsContainer);
 
-    gameContainer.appendChild(card);
-    mainContent.appendChild(gameContainer);
     window.renderCancelButton();
   }
 
-  selectLetter(letter) {
+  selectLetter(letter, idx) {
     const question = this.questions[this.current];
     if (this.selectedLetters.length < question.answer.length) {
-      // Find the button that was clicked
-      const buttons = document.querySelectorAll("#letter-buttons button");
-      const clickedButton = Array.from(buttons).find(
-        (btn) => btn.textContent.trim() === letter
-      );
-
+      // Disable the button with the specific index
+      const clickedButton = document.getElementById(`letter-btn-${idx}`);
       if (clickedButton) {
         // Add click animation
         clickedButton.classList.add("scale-90");
         setTimeout(() => {
           clickedButton.classList.remove("scale-90");
         }, 200);
-
-        // Disable the button with enhanced effect
         clickedButton.disabled = true;
         clickedButton.classList.add("disabled");
       }
-
-      this.selectedLetters.push(letter);
+      this.selectedLetters.push({ letter, idx });
       this.updateSelectedWord();
     }
   }
 
   updateSelectedWord() {
-    const selectedWordContainer = document.getElementById("selected-word");
+    const selectedWordContainer = document.getElementById("selected-letters");
     if (!selectedWordContainer) return;
-
-    selectedWordContainer.innerHTML = Array(
-      this.questions[this.current].answer.length
-    )
+    const question = this.questions[this.current];
+    selectedWordContainer.innerHTML = Array(question.answer.length)
       .fill("_")
       .map(
         (_, index) => `
-        <div class="w-10 h-10 border-2 border-gray-300 rounded-lg flex items-center justify-center text-xl font-bold ${
+        <div class="w-10 h-10 border-2 border-gray-300 rounded-lg flex items-center justify-center text-xl font-bold select-none ${
           index < this.selectedLetters.length
             ? "text-gray-800"
             : "text-gray-400"
@@ -294,14 +259,13 @@ class WordScrambleGame {
         }">
           ${
             index < this.selectedLetters.length
-              ? this.selectedLetters[index]
+              ? this.selectedLetters[index].letter
               : "_"
           }
         </div>
       `
       )
       .join("");
-
     // Add pop animation to the last filled letter
     if (this.selectedLetters.length > 0) {
       const lastLetter =
@@ -313,38 +277,30 @@ class WordScrambleGame {
     }
   }
 
-  clearSelection() {
-    const selectedWordContainer = document.getElementById("selected-word");
-    if (selectedWordContainer) {
-      // Add fade out animation
-      selectedWordContainer.classList.add("opacity-0", "scale-95");
+  backspaceLetter() {
+    if (this.selectedLetters.length === 0) return;
+    const last = this.selectedLetters.pop();
+    // Re-enable đúng nút ký tự vừa xoá
+    const btn = document.getElementById(`letter-btn-${last.idx}`);
+    if (btn) {
+      btn.disabled = false;
+      btn.classList.remove("disabled");
+      btn.classList.add("animate-pop");
       setTimeout(() => {
-        this.selectedLetters = [];
-        this.updateSelectedWord();
-        selectedWordContainer.classList.remove("opacity-0", "scale-95");
-
-        // Re-enable all letter buttons with animation
-        const buttons = document.querySelectorAll("#letter-buttons button");
-        buttons.forEach((btn) => {
-          btn.disabled = false;
-          btn.classList.remove("disabled");
-          btn.classList.add("animate-pop");
-          setTimeout(() => {
-            btn.classList.remove("animate-pop");
-          }, 300);
-        });
-      }, 200);
+        btn.classList.remove("animate-pop");
+      }, 300);
     }
+    this.updateSelectedWord();
   }
 
   checkAnswer() {
     const question = this.questions[this.current];
-    const userAnswer = this.selectedLetters.join("");
+    const userAnswer = this.selectedLetters.map((l) => l.letter).join("");
     const isCorrect =
       userAnswer.toLowerCase() === question.answer.toLowerCase();
 
     // Add check animation
-    const selectedWordContainer = document.getElementById("selected-word");
+    const selectedWordContainer = document.getElementById("selected-letters");
     if (selectedWordContainer) {
       selectedWordContainer.classList.add(
         isCorrect ? "animate-correct" : "animate-incorrect"
@@ -386,6 +342,7 @@ class WordScrambleGame {
 
     // Add delay before moving to next question
     setTimeout(() => {
+      this.selectedLetters = [];
       this.current++;
       this.render();
     }, 800);
@@ -438,8 +395,8 @@ class WordScrambleGame {
                   <span class="text-gray-600">${answer.user}</span>
                 </p>
                 <p class="text-sm">
-                  <span class="font-medium text-gray-700">Correct answer:</span>
-                  <span class="text-gray-600">${answer.answer}</span>
+                  <span class="font-medium text-green-700">Correct answer:</span>
+                  <span class="text-green-700">${answer.answer}</span>
                 </p>
                 <p class="text-sm">
                   <span class="font-medium text-gray-700">IPA:</span>

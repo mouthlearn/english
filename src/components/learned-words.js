@@ -7,29 +7,32 @@ class LearnedWordsComponent {
   }
 
   init() {
-    window.renderGameHeader("Learned Words");
+    window.renderGameHeader("Learned Words", false);
     this.render();
   }
 
   render() {
     const mainContent = document.querySelector("main");
     mainContent.innerHTML = `
-            <div class="container mx-auto px-4 py-8">
-                <div class="mb-8">
-                    <div class="bg-white rounded-lg shadow-lg p-6 mb-4">
-                        <p class="text-xl font-bold text-blue-800">
-                            Total Learned Words: ${
-                              this.learnedWordsManager.getLearnedWords().length
-                            }
-                        </p>
-                    </div>
-                </div>
-
-                <div id="learnedWordsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    ${this.renderLearnedWordsList()}
-                </div>
+      <div class="pt-24 pb-8 px-4 min-h-[calc(100vh-6rem)] flex items-start justify-center">
+        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8">
+          <div class="mb-8">
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+              <p class="text-xl font-bold text-blue-800">
+                Total Learned Words: ${
+                  this.learnedWordsManager.getLearnedWords().length
+                }
+              </p>
             </div>
-        `;
+          </div>
+
+          <div id="learnedWordsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${this.renderLearnedWordsList()}
+          </div>
+        </div>
+      </div>
+    `;
+    const container = mainContent.querySelector(".w-full.max-w-5xl");
 
     this.attachEventListeners();
   }
@@ -44,9 +47,13 @@ class LearnedWordsComponent {
       .map(
         (word) => `
             <div class="bg-white rounded-lg shadow-lg p-4">
-                <h3 class="text-xl font-bold text-blue-800">${word.word}</h3>
-                <p class="text-sm text-gray-500 mt-2">${word.ipa}</p>
-                <p class="text-gray-600">${word.definition}</p>
+                <h3 class="text-xl font-bold text-blue-800" translate="yes">${
+                  word.word
+                }</h3>
+                <p class="text-sm text-gray-500 mt-2" translate="yes">${
+                  word.ipa
+                }</p>
+                <p class="text-gray-600" translate="yes">${word.definition}</p>
                 <div class="text-xs text-gray-400 mt-2">
                     Learned: ${new Date(word.learnedAt).toLocaleDateString()}
                     ${

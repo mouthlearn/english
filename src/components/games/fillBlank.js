@@ -80,7 +80,12 @@ class ItIsGame {
 
   render() {
     const mainContent = document.querySelector("main");
-    mainContent.innerHTML = "";
+    mainContent.innerHTML = `
+      <div class="pt-24 pb-8 px-4 min-h-[calc(100vh-6rem)] flex items-start justify-center">
+        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8"></div>
+      </div>
+    `;
+    const container = mainContent.querySelector(".w-full.max-w-5xl");
     if (this.timeUp) {
       this.showResult();
       return;
@@ -90,34 +95,32 @@ class ItIsGame {
       return;
     }
     const q = this.questions[this.current];
-
-    // Card UI
-    const container = document.createElement("div");
-    container.className = "max-w-xl mx-auto";
-    const card = document.createElement("div");
-    card.className = "bg-white rounded-xl shadow-lg p-6";
-    card.innerHTML = `
-      <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">It is?</h2>
-        <p class="text-gray-600 mb-2">Question ${this.current + 1} of ${
+    // Render trực tiếp vào container
+    const header = document.createElement("div");
+    header.className = "mb-6";
+    header.innerHTML = `
+      <h2 class="text-2xl font-bold text-gray-800 mb-2">It is?</h2>
+      <p class="text-gray-600 mb-2">Question ${this.current + 1} of ${
       this.questions.length
     }</p>
-      </div>
-      <div class="text-xl font-medium text-gray-800 mb-4">${q.text}</div>
-      <div class="grid grid-cols-1 gap-4">
-        ${q.choices
-          .map(
-            (c, idx) => `
-          <button class="choice-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-500 transition-all transform hover:scale-[1.02]" data-choice="${c}">${c}</button>
-        `
-          )
-          .join("")}
-      </div>
     `;
-    container.appendChild(card);
-    mainContent.appendChild(container);
+    container.appendChild(header);
+    const questionDiv = document.createElement("div");
+    questionDiv.className = "text-xl font-medium text-gray-800 mb-4";
+    questionDiv.innerHTML = q.text;
+    container.appendChild(questionDiv);
+    const choicesDiv = document.createElement("div");
+    choicesDiv.className = "grid grid-cols-1 gap-4";
+    choicesDiv.innerHTML = q.choices
+      .map(
+        (c, idx) => `
+        <button class="choice-btn w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-500 transition-all transform hover:scale-[1.02]" data-choice="${c}">${c}</button>
+      `
+      )
+      .join("");
+    container.appendChild(choicesDiv);
     // Gắn sự kiện
-    card.querySelectorAll(".choice-btn").forEach((btn) => {
+    choicesDiv.querySelectorAll(".choice-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         this.handleAnswer(e.target.dataset.choice);
       });
@@ -217,8 +220,8 @@ class ItIsGame {
                   <span class="text-gray-600">${user}</span>
                 </p>
                 <p class="text-sm">
-                  <span class="font-medium text-gray-700">Correct answer:</span>
-                  <span class="text-gray-600">${correct}</span>
+                  <span class="font-medium text-green-700">Correct answer:</span>
+                  <span class="text-green-700">${correct}</span>
                 </p>
                 <p class="text-sm">
                   <span class="font-medium text-gray-700">IPA:</span>

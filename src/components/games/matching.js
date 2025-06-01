@@ -47,8 +47,15 @@ class MatchingGame {
   }
 
   render() {
-    const gameContainer = document.createElement("div");
-    gameContainer.className = "matching-game p-6 bg-white rounded-lg shadow-lg";
+    const mainContent = document.querySelector("main");
+    mainContent.innerHTML = `
+      <div class="pt-24 pb-8 px-4 min-h-[calc(100vh-6rem)] flex items-start justify-center">
+        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8">
+          <!-- Nội dung game sẽ được render ở đây -->
+        </div>
+      </div>
+    `;
+    const container = mainContent.querySelector(".w-full.max-w-5xl");
 
     const header = document.createElement("div");
     header.className = "mb-6";
@@ -56,7 +63,7 @@ class MatchingGame {
       <h2 class="text-2xl font-bold text-gray-800 mb-2">Word Matching Game</h2>
       <p class="text-gray-600">Match the English words with their Vietnamese definitions</p>
     `;
-    gameContainer.appendChild(header);
+    container.appendChild(header);
 
     const cardsContainer = document.createElement("div");
     cardsContainer.className = "grid grid-cols-2 md:grid-cols-3 gap-4";
@@ -78,12 +85,8 @@ class MatchingGame {
       cardsContainer.appendChild(card);
     });
 
-    gameContainer.appendChild(cardsContainer);
+    container.appendChild(cardsContainer);
 
-    // Add game container to main content
-    const mainContent = document.querySelector("main");
-    mainContent.innerHTML = "";
-    mainContent.appendChild(gameContainer);
     window.renderCancelButton();
   }
 
