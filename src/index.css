@@ -1,0 +1,23 @@
+@keyframes custom-ping {
+  75%,
+  100% {
+    transform: scale(1.15); /* nhỏ hơn mặc định */
+    opacity: 0;
+  }
+}
+.custom-ping {
+  position: relative;
+}
+.custom-ping::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgb(59 130 246 / 0.35); /* xanh dương nhạt, khác màu chính */
+  animation: custom-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  z-index: 0;
+}
+.custom-ping > * {
+  position: relative;
+  z-index: 1;
+}

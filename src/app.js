@@ -61,6 +61,7 @@ class App {
 
   renderMainMenu() {
     const mainContent = document.querySelector("main");
+
     // Thêm background SVG gradient blur
     if (!document.getElementById("modern-gradient-bg")) {
       const bgDiv = document.createElement("div");
@@ -159,32 +160,38 @@ class App {
       );
       let html = games
         .map((game) => {
-          const title =
-            game.id === "learned-words"
-              ? `${game.title} (${
-                  window.learnedWordsManager.getLearnedWords().length
-                })`
-              : game.title;
           return `
           <div class="launcher-card flex flex-col items-center cursor-pointer group" data-game-id="${
             game.id
           }">
-            <div class="w-20 h-20 rounded-2xl shadow-xl flex items-center justify-center transition-transform duration-150 group-hover:scale-110 group-hover:shadow-2xl ${
+            <div class="w-20 h-20 relative rounded-2xl shadow-xl flex items-center justify-center transition-transform duration-150 group-hover:scale-110 group-hover:shadow-2xl ${
               bgMap[game.id]
             }">
               ${
                 game.id === "app-info"
                   ? '<span class="text-4xl select-none">ℹ️</span>'
-                  : `<img src="${iconMap[game.id]}" alt="${
+                  : `${
+                      game.id === "learned-words"
+                        ? `<span class="text-base select-none absolute top-1 -translate-y-1/2 -right-3 w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-full px-2">${
+                            window.learnedWordsManager.getLearnedWords()
+                              .length > 99
+                              ? "99+"
+                              : window.learnedWordsManager.getLearnedWords()
+                                  .length
+                          }</span>`
+                        : ``
+                    }
+                    <img src="${iconMap[game.id]}" alt="${
                       game.title
                     } icon" class="w-16 h-16 select-none pointer-events-none" draggable="false" />`
               }
             </div>
-            <span class="launcher-title mt-2">${title}</span>
+            <span class="launcher-title mt-2">${game.title}</span>
           </div>
         `;
         })
         .join("");
+
       // Stats app luôn ở cuối
       html += `
         <div class="flex flex-col items-center cursor-pointer group" onclick="document.querySelector('.stats-modal').classList.remove('hidden')">
@@ -212,6 +219,7 @@ class App {
       });
     };
     renderGrid();
+
     // Xử lý search realtime
     const searchInput = document.getElementById("launcher-search");
     searchInput.addEventListener("input", (e) => {
@@ -227,9 +235,11 @@ class App {
         document.activeElement.tagName === "TEXTAREA"
       )
         return;
+
       // Chỉ nhận ký tự chữ/số và một số ký tự đặc biệt
       if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
         searchInput.focus();
+
         // Nếu input đang rỗng hoặc đã select hết, thay thế bằng ký tự mới
         if (
           searchInput.value === "" ||
@@ -252,6 +262,7 @@ class App {
       }
     };
     document.addEventListener("keydown", keydownHandler);
+
     // Modal animation giữ nguyên
     const modal = document.querySelector(".stats-modal");
     const modalContent = modal.querySelector(".bg-white");
@@ -299,6 +310,7 @@ window.addEventListener("beforeinstallprompt", (e) => {
 window.showAppInfoModal = function () {
   let modal = document.getElementById("app-info-modal");
   if (modal) modal.remove();
+
   modal = document.createElement("div");
   modal.id = "app-info-modal";
   modal.className =
@@ -334,14 +346,45 @@ window.showAppInfoModal = function () {
     </div>
   `;
   document.body.appendChild(modal);
+
   // Cho phép click ra ngoài để tắt
   modal.onclick = function (e) {
     if (e.target === modal) modal.remove();
   };
+
   // Hiện nút Install nếu có deferredPrompt
   setTimeout(() => {
     const installBtn = document.getElementById("install-btn");
     const guide = document.getElementById("install-guide");
+
+    // Detect standalone mode
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+    if (isStandalone && installBtn && guide) {
+      installBtn.style.display = "none";
+      guide.style.display = "none";
+
+      // Thêm nút Update
+      let updateBtn = document.getElementById("update-btn");
+      if (!updateBtn) {
+        updateBtn = document.createElement("button");
+        updateBtn.id = "update-btn";
+        updateBtn.className =
+          "mb-2 px-5 py-2 bg-green-600 text-white rounded-lg font-semibold shadow hover:bg-green-700 transition select-none w-full";
+        updateBtn.innerText = "Update App";
+        updateBtn.onclick = async function () {
+          // Clear all caches (PWA cache), không xoá localStorage
+          if ("caches" in window) {
+            const cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map((name) => caches.delete(name)));
+          }
+          window.location.reload(true);
+        };
+        installBtn.parentNode.insertBefore(updateBtn, installBtn);
+      }
+      return;
+    }
     if (deferredPrompt && installBtn) {
       installBtn.style.display = "";
       guide.style.display = "none";

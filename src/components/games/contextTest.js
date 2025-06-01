@@ -10,8 +10,7 @@ class ContextTestGame {
   }
 
   init() {
-    window.renderGameHeader("Context Test");
-    window.hideFloatEndButtons();
+    window.hideFloatEndButtons && window.hideFloatEndButtons();
     this.showDifficultySelection();
   }
 
@@ -368,33 +367,41 @@ class ContextTestGame {
   render() {
     const mainContent = document.querySelector("main");
     mainContent.innerHTML = `
-      <div class="pt-24 pb-8 px-4 min-h-[calc(100vh-6rem)] flex items-start justify-center">
-        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8"></div>
+      <div class="px-4 min-h-[100vh] flex flex-col items-center justify-center">
+        <div class="w-full max-w-5xl flex flex-col gap-6 items-center">
+          <!-- Card Title/Desc/Mode -->
+          <div class="relative w-full max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center mb-2">
+            <h2 class="text-2xl font-bold text-gray-800 text-center flex-1">Context Test</h2>
+            <p class="text-gray-600 text-center mt-2">Fill in the blank with the appropriate word</p>
+            <div class="mt-2 flex justify-center">
+              <span class="px-3 py-1 rounded-full text-sm font-medium ${
+                this.difficulty === "easy"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }">${
+      this.difficulty === "easy" ? "Easy Mode" : "Hard Mode"
+    }</span>
+            </div>
+            <div id="game-timer" class="absolute left-1/2 -translate-x-1/2 top-[100%] mt-2 bg-blue-600 text-white border border-blue-300 shadow-lg font-bold text-base px-6 py-2 rounded-full custom-ping z-10"></div>
+          </div>
+          <!-- Card Nội dung chính -->
+          <div class="w-full max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6">
+            <div id="context-question-content"></div>
+          </div>
+        </div>
+        <!-- Floating Back Button -->
+        <button id="floating-back-btn" class="fixed left-1/2 -translate-x-1/2 bottom-6 z-50 flex items-center gap-2 px-8 py-3 bg-gray-700 text-white rounded-full shadow-xl hover:bg-gray-800 active:scale-95 transition-all duration-200 font-medium text-lg select-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
+          Back
+        </button>
       </div>
     `;
-    const container = mainContent.querySelector(".w-full.max-w-5xl");
+    // Render nội dung câu hỏi vào #context-question-content
+    const contentDiv = document.getElementById("context-question-content");
     if (this.current >= this.questions.length || this.timeUp) {
       this.showResult();
       return;
     }
-    // Render trực tiếp vào container
-    const header = document.createElement("div");
-    header.className = "flex items-center justify-between mb-4";
-    header.innerHTML = `
-      <h2 class="text-2xl font-bold text-gray-800">Context Test</h2>
-      <span class="px-3 py-1 rounded-full text-sm font-medium ${
-        this.difficulty === "easy"
-          ? "bg-green-100 text-green-800"
-          : "bg-red-100 text-red-800"
-      }">
-        ${this.difficulty === "easy" ? "Easy Mode" : "Hard Mode"}
-      </span>
-    `;
-    container.appendChild(header);
-    const desc = document.createElement("p");
-    desc.className = "text-gray-600 mb-6";
-    desc.textContent = "Fill in the blank with the appropriate word";
-    container.appendChild(desc);
     const question = this.questions[this.current];
     const questionContainer = document.createElement("div");
     questionContainer.className = "mb-6";
@@ -412,8 +419,7 @@ class ContextTestGame {
       }</p>
       <p class="text-gray-600 italic" translate="yes">${question.definition}</p>
     `;
-    container.appendChild(questionContainer);
-    // ... render phần còn lại (options/input) vào container ...
+    contentDiv.appendChild(questionContainer);
     if (this.difficulty === "easy") {
       const allWords = window.vocabManager.getAllWords();
       const options = this.generateOptions(question.answer, allWords);
@@ -429,7 +435,7 @@ class ContextTestGame {
       `
         )
         .join("");
-      container.appendChild(optionsContainer);
+      contentDiv.appendChild(optionsContainer);
     } else {
       const inputDiv = document.createElement("div");
       inputDiv.className = "space-y-4";
@@ -437,26 +443,46 @@ class ContextTestGame {
         <input type="text" 
                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                placeholder="Type your answer here..."
-               id="answer-input">
+               id="answer-input"
+               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">
         <button class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-[1.02]"
                 onclick="document.getElementById('answer-input').value && contextTestGame.handleAnswer(document.getElementById('answer-input').value.trim())">
           Submit Answer
         </button>
       `;
-      container.appendChild(inputDiv);
+      contentDiv.appendChild(inputDiv);
     }
-    window.renderCancelButton();
+    // Floating Back Button event
+    const backBtn = document.getElementById("floating-back-btn");
+    backBtn.onclick = () => {
+      window.showConfirmDialog(
+        "Are you sure you want to return to the main menu?",
+        () => {
+          if (window.globalGameTimer) window.globalGameTimer.stop();
+          window.hideCancelButton && window.hideCancelButton();
+          window.location.reload();
+        },
+        null
+      );
+    };
+    // Khởi tạo timer
+    if (window.globalGameTimer) window.globalGameTimer.stop();
+    window.globalGameTimer = new GameTimer();
+    const timer = document.getElementById("game-timer");
+    if (timer) window.globalGameTimer.timerEl = timer;
+    // Focus input nếu hard mode
     if (this.difficulty === "hard") {
       const input = document.getElementById("answer-input");
-      input.focus();
-      input.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          const value = input.value.trim();
-          if (value) {
-            this.handleAnswer(value);
+      input && input.focus();
+      input &&
+        input.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            const value = input.value.trim();
+            if (value) {
+              this.handleAnswer(value);
+            }
           }
-        }
-      });
+        });
     }
   }
 
@@ -507,6 +533,9 @@ class ContextTestGame {
       }
     }
 
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
     this.current++;
     this.render();
   }
@@ -529,7 +558,7 @@ class ContextTestGame {
 
     // Only show detailed answers
     const answersSection = document.createElement("div");
-    answersSection.className = "result-display mt-8 space-y-6";
+    answersSection.className = "result-display mt-8 pb-16 space-y-6";
     answersSection.innerHTML = `
       <h3 class="text-xl font-bold text-gray-800 mb-6">Detailed Answers</h3>
       ${this.userAnswers
