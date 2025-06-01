@@ -2,7 +2,7 @@
     "name": "English Vocabulary Learning",
     "short_name": "English Vocab",
     "description": "Learn English vocabulary through interactive games",
-    "start_url": "/",
+    "start_url": "/english",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#ffffff",
